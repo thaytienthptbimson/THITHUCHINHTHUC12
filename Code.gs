@@ -1,7 +1,7 @@
 /**
  * THỐNG KÊ KẾT QUẢ HỌC SINH - CHỈ CẦN 1 FILE NÀY
  *
- * Link web app: https://script.google.com/macros/s/AKfycbw2wAcDQzLZnzDYBZR3bB6H7A9REOhvFcPuJXCseuO0QTCNVhkgmm6sgH0KVOyFeVPY/exec
+ * Link web app: https://script.google.com/macros/s/AKfycbzdN-FjMwdw6rbIP6a6ux9l7jcvUn1u1Dm5E6AT1mplfujs5gKpy5Ol5_HFOlbH9_zj/exec
  *
  * - Mở link trên bằng trình duyệt  -> trang thống kê cho giáo viên (nhập mật khẩu VIEW_KEY)
  * - Học sinh ở các máy khác nộp kết quả về sheet "KetQua" bằng 1 trong 2 cách:
