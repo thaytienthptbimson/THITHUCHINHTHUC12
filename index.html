@@ -165,8 +165,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
           <input type="text" id="inpSbd" placeholder="260012" autocomplete="off">
         </div>
         <div class="err-msg" id="lobbyErr"></div>
-        <button class="btn primary" id="btnStart" style="width:100%;padding:12px" onclick="ExamEngine.startNewSession()">Bắt Đầu Làm Bài</button>
-        <button class="btn" id="btnReviewSaved" style="width:100%;margin-top:10px;display:none" onclick="ExamEngine.openSavedReview()">Xem lại bài đã nộp & đáp án</button>
+        <button class="btn primary" style="width:100%;padding:12px" onclick="ExamEngine.startNewSession()">Bắt Đầu Làm Bài</button>
         <div style="text-align:center;margin-top:16px">
           <a href="javascript:void(0)" style="font-size:13px;color:var(--mut)" onclick="AdminEngine.promptPin()">Khu vực quản trị giáo viên</a>
         </div>
@@ -175,11 +174,10 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
         <div class="rules-box">
           <h4 style="margin:0 0 10px;font-size:15px">Quy chế & Hướng dẫn làm bài:</h4>
           <ul>
-            <li>Đề thi được tải một lần khi mở trang; sau đó thí sinh vẫn làm bài được nếu mạng chập chờn (điểm chỉ gửi về máy chủ khi nộp bài, cần có mạng).</li>
-          <li>Mỗi thí sinh chỉ được thi <b>1 lần duy nhất</b>. Điểm số sẽ hiện ngay sau khi nộp bài.</li>
-            <li>Các phần của đề thi và đáp án sẽ được <b>xáo trộn ngẫu nhiên</b>.</li>
-            <li><b style="color:var(--bad)">Bảo mật: Chi tiết số câu đúng/sai và Đáp án chi tiết chỉ được xem sau khi kết thúc thời gian thi quy định.</b></li>
+            <li>Hệ thống chạy <b>độc lập hoàn toàn</b>, không sợ mất kết nối mạng, không sợ bị chặn.</li>
+            <li>Các phần của đề thi và 4 đáp án sẽ được <b>xáo trộn ngẫu nhiên</b> đối với mỗi thí sinh (thứ tự câu trong bài đọc được giữ nguyên).</li>
             <li>Hết giờ hệ thống sẽ <b>tự động nộp bài và đồng bộ điểm</b> về máy chủ.</li>
+            <li>Hệ thống có bộ đếm theo dõi số lần rời khỏi màn hình (chuyển tab).</li>
           </ul>
         </div>
       </div>
@@ -256,7 +254,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
       <div class="kpi-box"><small>Rời phòng thi</small><b id="kpiTabSwitches">0 lần</b></div>
     </div>
     <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px">
-      <button class="btn primary" id="btnReview" onclick="ExamEngine.enterReviewMode()">Xem lại bài & đáp án</button>
+      <button id="btnReview" class="btn primary" onclick="ExamEngine.enterReviewMode()">Xem lại bài & đáp án</button>
       <button class="btn" onclick="window.print()">In Phiếu Điểm</button>
       <button class="btn" onclick="ExamEngine.exitToLobby()">Về Trang Chủ</button>
     </div>
@@ -272,7 +270,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
         <div style="color:var(--mut);font-size:13.5px">Quản lý đề thi, cấu hình và danh sách kết quả thí sinh</div>
       </div>
       <div style="display:flex;gap:8px">
-        <button class="btn primary" onclick="window.open(GOOGLE_SHEETS_URL, '_blank')">Thống kê tất cả máy</button>
         <button class="btn" onclick="AdminEngine.exportCSV()">Xuất Excel (Máy Cục Bộ)</button>
         <button class="btn danger" onclick="AdminEngine.clearAllSubmissions()">Xóa lịch sử cục bộ</button>
         <button class="btn" onclick="ExamEngine.exitToLobby()">← Thoát</button>
@@ -282,14 +279,15 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
         <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px">
           <h3 style="margin-top:0">Chỉnh Sửa Đề Thi</h3>
-          <p style="font-size:13.5px;color:var(--mut)">Đề thi được đọc từ file JSON. Sửa nội dung đề và tên trường trong thẻ script <code>default-exam-data</code>; lịch thi và thời lượng chỉnh ở mục bên dưới.</p>
+          <p style="font-size:13.5px;color:var(--mut)">Đề thi hiện tại (Đề 2) đã được nhúng thẳng vào file HTML. Nội dung đề và tên trường được chỉnh trực tiếp trong file HTML; lịch thi và thời lượng chỉnh ở mục bên dưới.</p>
           <textarea id="adminExamJson" rows="6" style="margin-bottom:10px; font-family:monospace; font-size:12px;" placeholder="Xem mã JSON..." readonly></textarea>
         </div>
 
         <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px">
           <h3 style="margin-top:0">Thông Tin Hệ Thống</h3>
           <ul style="font-size:13.5px;color:var(--mut);padding-left:18px;margin:0">
-            <li style="margin-bottom:8px"><b>Bảo mật cao:</b> Học sinh nộp sớm chỉ thấy được Điểm, không thấy số câu đúng/sai cho đến khi hết giờ thi.</li>
+            <li style="margin-bottom:8px"><b>Khắc phục lỗi Đề 1:</b> Hệ thống đã được viết lại để tự động xóa trí nhớ (cache) trình duyệt nếu học sinh làm đề mới.</li>
+            <li style="margin-bottom:8px"><b>Không cần file JSON ngoài:</b> Đề thi 100% nằm gọn trong file này, đảm bảo học sinh không bao giờ bị báo lỗi mạng.</li>
             <li style="margin-bottom:8px"><b>Đồng bộ dữ liệu:</b> Tự động bắn điểm về Google Sheets.</li>
             <li><b>Lịch thi linh hoạt:</b> Đặt khung giờ, thời lượng hoặc chuyển sang mở tự do ngay trong bảng điều khiển này.</li>
           </ul>
@@ -315,9 +313,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
         <button class="btn primary" onclick="AdminEngine.saveSchedule()">Lưu lịch thi</button>
         <button class="btn" onclick="AdminEngine.copyLink()">Sao chép liên kết cho học sinh</button>
         <button class="btn" onclick="AdminEngine.resetSchedule()">Khôi phục mặc định</button>
-        <button class="btn" onclick="AdminEngine.allowRetake()">Cho phép thí sinh thi lại</button>
       </div>
-      <p style="font-size:12.5px;color:var(--mut);margin:12px 0 0">Khi bấm Lưu, lịch được đẩy lên máy chủ (Google Apps Script) và áp dụng cho mọi học sinh ở lần mở trang hoặc bấm Bắt đầu tiếp theo.</p>
+      <p style="font-size:12.5px;color:var(--mut);margin:12px 0 0">Lịch được lưu trên trình duyệt này. Để áp dụng trên máy học sinh, gửi liên kết vừa sao chép: mở liên kết một lần là máy đó nhận lịch mới.</p>
     </div>
 
     <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px">
@@ -353,128 +350,423 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
 
 <div id="toast"></div>
 
+<!-- =========================================================================
+     DỮ LIỆU ĐỀ THI SỐ 2 (NHÚNG CỨNG VÀO LÕI ĐỂ CHỐNG MỌI LỖI MẠNG)
+========================================================================== -->
 <script id="default-exam-data" type="application/json">
 {
   "meta": {
-    "school": "SỞ GIÁO DỤC VÀ ĐÀO TẠO THANH HÓA",
-    "title": "ĐỀ KIỂM TRA NĂNG LỰC THI VÀO LỚP 10 THPT",
-    "subtitle": "Năm học 2025-2026 | Môn thi: TIẾNG ANH",
-    "durationMin": 60,
-    "pointsPerQuestion": 0.2
+    "school": "TRƯỜNG THPT BỈM SƠN | TỔ NGOẠI NGỮ",
+    "title": "ĐỀ THI THỬ TỐT NGHIỆP TRUNG HỌC PHỔ THÔNG NĂM 2026 – 2027",
+    "subtitle": "ĐỀ SỐ 2 | Môn thi: TIẾNG ANH",
+    "durationMin": 50,
+    "pointsPerQuestion": 0.25,
+    "startTime": "2026-09-23T14:00:00+07:00",
+    "endTime": "2026-09-25T14:00:00+07:00"
   },
   "passages": [
     {
-      "id": "pA1",
-      "badge": "PART A - I",
-      "title": "PHONETICS",
-      "content": "Choose the word whose underlined part is pronounced differently from that of the others in each question."
+      "id": "p1",
+      "badge": "Câu 1–6: Điền từ (Leaflet)",
+      "title": "KINDNESS WEEK CAMPAIGN",
+      "content": "The Student Council is delighted to launch “Kindness Week”, a series of activities designed to spread positivity throughout our school community. If every student <b>(1)</b> ______ part in at least one kind act each day, our school will feel warmer and friendlier by the end of the week. Our main objective is to raise students’ <b>(2)</b> ______ of the value of small, everyday gestures. To support this, kindness boxes will be <b>(3)</b> ______ near every classroom for students to drop in anonymous notes of appreciation. Peer-support workshops will also be organised to help students come <b>(4)</b> ______ with practical ways to comfort a struggling classmate. These sessions are designed to make compassion a habit rather than a one-off occasion. We hope to <b>(5)</b> ______ a culture of empathy that lasts well beyond this single week. We firmly believe that small daily gestures will accumulate into something far greater over time. Teachers will be on hand to support students throughout the week’s activities. Please register your class’s planned activities with the Student Council office. Your <b>(6)</b> ______ is essential to the success of this campaign. Don’t hesitate – join the wave of kindness today!"
     },
     {
-      "id": "pA2",
-      "badge": "PART A - II",
-      "title": "PHONETICS",
-      "content": "Choose the word whose stress pattern is different from that of the others in each question."
+      "id": "p2",
+      "badge": "Câu 12–16: Điền mệnh đề/cụm từ",
+      "title": "",
+      "content": "Among the many quirks of human perception, one deserves particular attention: the conviction that everyone around us is watching our every move. Psychologists refer to this tendency as the spotlight effect, a bias <b>(12)</b> ______. Imagine tripping in a crowded hallway or wearing a shirt with an unfortunate stain; the assumption that this small mishap will be remembered by everyone who witnessed it is, more often than not, wildly overstated.<br><br>Experiments repeatedly reveal a striking gap between how conspicuous we feel and how much others actually register. Participants <b>(13)</b> ______ consistently overestimated how many people in the room would later recall their T-shirt. <b>(14)</b> ______.<br><br>This matters because the spotlight effect quietly fuels social anxiety, <b>(15)</b> ______ – a presentation, a first date, an awkward silence – long after everyone else has forgotten it. <b>(16)</b> ______. Recognising the bias for what it is offers a small but genuine form of relief: most of the audience, it seems, was never really watching."
     },
     {
-      "id": "pB1",
-      "badge": "PART B - I",
-      "title": "VOCABULARY AND GRAMMAR",
-      "content": "Supply the correct form of the verb in brackets."
+      "id": "p3",
+      "badge": "Câu 17–26: Đọc hiểu",
+      "title": "",
+      "content": "Few industries have expanded as rapidly over the past two decades as fast fashion, a business model built on churning out inexpensive, trend-driven clothing at a punishing pace. A t-shirt that costs less than a cup of coffee might appear to be an unambiguous bargain, yet very little about that garment’s price reflects what it genuinely costs to produce. Whenever a price fails to capture the full expense of making something, someone else, somewhere else, ends up settling the difference.<br><br>The environmental side of that unpaid bill is considerable. Producing a single cotton t-shirt can require several thousand litres of water, much of it drawn from regions already facing scarcity. Dyeing and finishing processes discharge chemical run-off into rivers that supply drinking water to nearby communities. Meanwhile, garments designed to be discarded after a handful of wears accumulate in landfills at a rate that recycling infrastructure has never come close to matching.<br><br>[I] The human cost is no less severe, even though it rarely appears on a price tag. [II] Many garment workers earn wages that fall well below what is needed to cover basic living expenses in the cities where their factories are located. [III] Extended shifts in poorly ventilated facilities, combined with exposure to dust and chemical fumes, have also been linked to chronic respiratory conditions among factory workers. [IV] Brands are rarely required to disclose any of these conditions, leaving consumers with little means of judging what a garment truly cost to make.<br><br>None of this means fast fashion cannot be reformed, but doing so requires abandoning the fiction that a five-dollar garment is somehow cost-free to produce. Economists sometimes refer to this gap as an externality: a cost generated by one party but shifted onto another, whether that be a river downstream, a worker’s lungs, or a landfill’s dwindling capacity. Until such costs are reflected somewhere in the price we pay, the true bill for fast fashion will simply continue to be paid by those least able to afford it."
     },
     {
-      "id": "pB2",
-      "badge": "PART B - II",
-      "title": "VOCABULARY AND GRAMMAR",
-      "content": "Supply the correct form of the words in capital to complete the sentences."
+      "id": "p4",
+      "badge": "Câu 27–32: Điền từ (Advertisement)",
+      "title": "CAMPUS RADIO PRESENTER WANTED",
+      "content": "Wave FM, our university’s student-run radio station, is looking for two enthusiastic presenters to join the team this term. The more confident you sound behind the microphone, the <b>(27)</b> ______ likely you are to be shortlisted for an audition. Successful candidates will gain valuable broadcasting experience, a modest stipend, and access to industry contacts. <b>(28)</b> ______, we offer a flexible schedule that can be arranged around lecture timetables. On top of that, <b>(29)</b> ______ prior broadcasting experience is required, as full training is provided to every new presenter. If you <b>(30)</b> ______ any questions about the role, feel free to drop by the station office before Friday. Applications should be submitted by email to wavefm@campus.edu no later than 25 October. Rarely has there been such a(n) <b>(31)</b> ______ opportunity to gain hands-on media experience while still a student. <b>(32)</b> ______ miss out – tune in and apply today!"
     },
     {
-      "id": "pB3",
-      "badge": "PART B - III",
-      "title": "VOCABULARY AND GRAMMAR",
-      "content": "Choose the word or phrase that best fits the gap in each of the following sentences."
-    },
-    {
-      "id": "pC1",
-      "badge": "PART C - I",
-      "title": "READING",
-      "content": "Read the following passage and choose the most suitable word from the ones given in the box to fill in each gap.<br><br><div style='padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:8px;font-weight:bold;text-align:center;'>to &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; pollution &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; so &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; playing &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; higher</div><br>Twenty years ago, people tried to leave the suburbs for cities, but nowadays many people are reluctant to make such a move. They say that compared to suburban areas, city life has many drawbacks.<br><br>The high cost of living is the first disadvantage. The bigger the city is, the (26) ________ the cost of living is. Accommodation and petrol are expensive. Food and drinks are also pricey.<br><br>Apart from that, city people seem to suffer from more noise and air (27) ________. The dense population, overcrowded neighborhoods, busy traffic, and big construction sites make cities noisy as well. These are harmful (28) ________ people's health, such as increasing their stress levels, disturbing their sleep, and making them suffer from breathing problems.<br><br>Lack of space is another drawback of city life. House prices are high in the city, (29) ________ people tend to live in smaller houses or in apartment blocks. Many cities lack spaces for outdoor activities; therefore, teenagers often hang out at shopping malls or in entertainment complexes instead of (30) ________ sports outdoors."
-    },
-    {
-      "id": "pC2",
-      "badge": "PART C - II",
-      "title": "READING",
-      "content": "Read the following passage and choose the best answer A, B, C or D to fill in each blank.<br><br>Many health experts believe that children and young people today are more unhealthy than they used to be. So why has this happened?<br><br>One reason is bad eating habits. They eat too (31) ________ fast food like hamburgers and pizzas and not enough fruits and vegetables. In (32) ________ United States, many children have been eating fast food regularly since they were young. In fact, almost one-third of American children aged four to nineteen have been eating fast food nearly all the time. They also don't do exercises and (33) ________ much time watching TV, surfing the Internet, playing computer games.<br><br>So how can you change your habits if you have been following an unhealthy (34) ________ for a long time? First, you change your diet and eat more vegetables. Next, find an activity (35) ________ you enjoy. Why not try something different like rock climbing or hiking? Many young people have found that becoming fit and healthy can be a lot of fun."
-    },
-    {
-      "id": "pC3",
-      "badge": "PART C - III",
-      "title": "READING",
-      "content": "Read the following passage and answer the questions by choosing the best answer A, B, C or D.<br><br>Cell phones are an important part of our society and their main use is communication. They keep students in touch with the rest of the world by giving them the power to interact with it. In the old days, if you forgot to bring your lunch, you had to rely on the school office calling home for you. Now, students have the ability to solve their own problems and handle certain emergencies on their own.<br><br>Cell phones also allow students to keep in touch with their friends and students at other schools. While not directly beneficial to education, better relationships can lead to higher self-esteem and reduce isolation, which is good for everybody. In the same way, camera features allow students to capture the kinds of memories that help build a solid school culture. In some cases, they can act as documentation of misbehaviors because they provide evidence of students' bad behaviors.<br><br>Academically, the cell phone can record a video or an audio of the lessons that may need to be reviewed later. And just imagine if classes could be easily recorded for students who are absent. What if they could even be streamed and seen from home instantly?"
-    },
-    {
-      "id": "pD1",
-      "badge": "PART D - I",
-      "title": "WRITING",
-      "content": "Rewrite each of the following sentences, beginning as shown so that the meaning stays the same."
-    },
-    {
-      "id": "pD2",
-      "badge": "PART D - II",
-      "title": "WRITING",
-      "content": "Rewrite each of the following sentences, using the given words so that it keeps the same meaning. Do not change the form of the words given."
+      "id": "p5",
+      "badge": "Câu 33–40: Đọc hiểu",
+      "title": "",
+      "content": "Ask most students how they prepare for an exam and the answer usually involves rereading a textbook chapter or highlighting a stack of notes in vivid colour. Such methods feel productive, largely because the material grows increasingly familiar with each pass. That sense of familiarity, however, is a notoriously unreliable guide to how well the information has actually been learned.<br><br>Cognitive scientists have spent decades comparing rereading against a rival strategy known as retrieval practice, or simply, self-testing. In one now-classic study, students who studied a passage once and then quizzed themselves repeatedly on its content outperformed students who reread the same passage four times, despite having spent far less total time with the material. The advantage held up not only immediately afterwards but, more strikingly, a week later.<br><br>Researchers attribute this to what they call desirable difficulty: the mental effort of pulling information out of memory, rather than simply recognising it on a page, appears to strengthen the very connections that make recall possible later on. Retrieval only helps, though, when learners can check their answers and correct their mistakes; without that feedback loop, students risk rehearsing errors as confidently as they rehearse facts.<br><br>None of this means rereading is entirely useless, particularly during a first encounter with unfamiliar material. Nor is self-testing a magic formula on its own: cramming a single, marathon quiz session into the night before an exam brings only a fraction of the benefit that comes from spacing several shorter sessions across the preceding weeks. Once the basics are in place, students are better served by closing the book, asking themselves what they remember, checking their answers, and repeating the process a few days later rather than a few hours later. The discomfort of struggling to recall an answer, far from being a sign that studying has failed, is frequently the very mechanism through which durable learning occurs."
     }
   ],
   "questions": [
-    { "n": 1, "passageId": "pA1", "type": "choice", "stem": "1. Choose the word whose underlined part is pronounced differently:<br>A. need<b>ed</b><br>B. look<b>ed</b><br>C. help<b>ed</b><br>D. watch<b>ed</b>", "opts": ["needed", "looked", "helped", "watched"], "answer": "A" },
-    { "n": 2, "passageId": "pA1", "type": "choice", "stem": "2. Choose the word whose underlined part is pronounced differently:<br>A. pl<b>ea</b>se<br>B. cl<b>ea</b>r<br>C. t<b>ea</b><br>D. cl<b>ea</b>n", "opts": ["please", "clear", "tea", "clean"], "answer": "B" },
-    { "n": 3, "passageId": "pA1", "type": "choice", "stem": "3. Choose the word whose underlined part is pronounced differently:<br>A. <b>th</b>ink<br>B. <b>th</b>in<br>C. <b>th</b>ank<br>D. <b>th</b>ough", "opts": ["think", "thin", "thank", "though"], "answer": "D" },
-    { "n": 4, "passageId": "pA2", "type": "choice", "stem": "4. Choose the word whose stress pattern is different from that of the others.", "opts": ["remind", "worker", "collect", "relax"], "answer": "B" },
-    { "n": 5, "passageId": "pA2", "type": "choice", "stem": "5. Choose the word whose stress pattern is different from that of the others.", "opts": ["historic", "delicious", "relation", "quality"], "answer": "D" },
-    { "n": 6, "passageId": "pB1", "type": "text", "stem": "6. My father (jog) ________ in the park every morning.", "answer": "jogs" },
-    { "n": 7, "passageId": "pB1", "type": "text", "stem": "7. The students enjoy (play) ________ soccer after school.", "answer": "playing" },
-    { "n": 8, "passageId": "pB1", "type": "text", "stem": "8. They (cook) ________ dinner when the light went out.", "answer": "were cooking" },
-    { "n": 9, "passageId": "pB1", "type": "text", "stem": "9. My teacher suggested that we (collect) ________ waste paper for the recycling program.", "answer": "collect" },
-    { "n": 10, "passageId": "pB1", "type": "text", "stem": "10. I (have) ________ a calculator, I would lend it to you now.", "answer": "had" },
-    { "n": 11, "passageId": "pB2", "type": "text", "stem": "11. Doing exercises regularly maintains your mental and ________ (PHYSICS) health.", "answer": "physical" },
-    { "n": 12, "passageId": "pB2", "type": "text", "stem": "12. Nowadays, students can use several AI tools to ________ (IMPROVEMENT) their English.", "answer": "improve" },
-    { "n": 13, "passageId": "pB2", "type": "text", "stem": "13. You should be careful when using ________ (PRODUCE) which contain chemicals.", "answer": "products" },
-    { "n": 14, "passageId": "pB2", "type": "text", "stem": "14. She speaks English ________ (FLUENT) after living in Britain for several years.", "answer": "fluently" },
-    { "n": 15, "passageId": "pB2", "type": "text", "stem": "15. The island has a very beautiful beach, but sadly, it is quite ________ (ACCESS).", "answer": "inaccessible" },
-    { "n": 16, "passageId": "pB3", "type": "choice", "stem": "16. She gave me ________ orange yesterday.", "opts": ["a", "an", "the", "Ø"], "answer": "B" },
-    { "n": 17, "passageId": "pB3", "type": "choice", "stem": "17. She has a meeting ________ Monday, but I'm not sure.", "opts": ["at", "in", "on", "to"], "answer": "C" },
-    { "n": 18, "passageId": "pB3", "type": "choice", "stem": "18. The new film is about a poor little girl ________ can speak several languages.", "opts": ["who", "whose", "whom", "which"], "answer": "A" },
-    { "n": 19, "passageId": "pB3", "type": "choice", "stem": "19. Mai drives ________ than her brother.", "opts": ["more carefully", "as careful", "carefully", "more careful"], "answer": "A" },
-    { "n": 20, "passageId": "pB3", "type": "choice", "stem": "20. Mr. Brown: \"Thank you for showing us around the Temple of Literature.\"<br>The tour guide: \"________.\"", "opts": ["That's a good idea", "Yes, I'd love to", "Of course", "You are welcome"], "answer": "D" },
-    { "n": 21, "passageId": "pB3", "type": "choice", "stem": "21. My grandmother doesn't know ________ to use the washing machine.", "opts": ["whom", "what", "how", "which"], "answer": "C" },
-    { "n": 22, "passageId": "pB3", "type": "choice", "stem": "22. We missed the bus this morning ________ we got up late.", "opts": ["despite", "although", "because", "because of"], "answer": "C" },
-    { "n": 23, "passageId": "pB3", "type": "choice", "stem": "23. My uncle ________ his living by selling bread on the streets.", "opts": ["does", "has", "takes", "earns"], "answer": "D" },
-    { "n": 24, "passageId": "pB3", "type": "choice", "stem": "24. The government is ________ a plan to solve the traffic problem in big cities.", "opts": ["carrying out", "looking up", "looking after", "turning off"], "answer": "A" },
-    { "n": 25, "passageId": "pB3", "type": "choice", "stem": "25. Extended families with three or four ________ living under one roof still remain in this region.", "opts": ["customs", "generations", "traditions", "relatives"], "answer": "B" },
-    { "n": 26, "passageId": "pC1", "type": "text", "stem": "26. Fill in the blank (26) with the correct word from the box.", "answer": "higher" },
-    { "n": 27, "passageId": "pC1", "type": "text", "stem": "27. Fill in the blank (27) with the correct word from the box.", "answer": "pollution" },
-    { "n": 28, "passageId": "pC1", "type": "text", "stem": "28. Fill in the blank (28) with the correct word from the box.", "answer": "to" },
-    { "n": 29, "passageId": "pC1", "type": "text", "stem": "29. Fill in the blank (29) with the correct word from the box.", "answer": "so" },
-    { "n": 30, "passageId": "pC1", "type": "text", "stem": "30. Fill in the blank (30) with the correct word from the box.", "answer": "playing" },
-    { "n": 31, "passageId": "pC2", "type": "choice", "stem": "31. Choose the best option to fill in the blank (31)", "opts": ["many", "a little", "a few", "much"], "answer": "D" },
-    { "n": 32, "passageId": "pC2", "type": "choice", "stem": "32. Choose the best option to fill in the blank (32)", "opts": ["a", "an", "the", "Ø"], "answer": "C" },
-    { "n": 33, "passageId": "pC2", "type": "choice", "stem": "33. Choose the best option to fill in the blank (33)", "opts": ["take", "spend", "make", "let"], "answer": "B" },
-    { "n": 34, "passageId": "pC2", "type": "choice", "stem": "34. Choose the best option to fill in the blank (34)", "opts": ["action", "hobby", "lifestyle", "balance"], "answer": "C" },
-    { "n": 35, "passageId": "pC2", "type": "choice", "stem": "35. Choose the best option to fill in the blank (35)", "opts": ["who", "which", "when", "why"], "answer": "B" },
-    { "n": 36, "passageId": "pC3", "type": "choice", "stem": "36. What is the main idea of the passage?", "opts": ["The importance of cell phones in communication and education.", "Cell phones will be used as cameras to capture memories.", "How to use some electronic devices in communication and education.", "Cell phones can be used as an excellent recorder."], "answer": "A" },
-    { "n": 37, "passageId": "pC3", "type": "choice", "stem": "37. The word \"they\" in paragraph 1 refers to ________.", "opts": ["students", "cell phones", "uses", "societies"], "answer": "B" },
-    { "n": 38, "passageId": "pC3", "type": "choice", "stem": "38. According to the passage, cell phones help students ________.", "opts": ["interact with the world", "handle the household chores", "write their lectures", "increase isolation"], "answer": "A" },
-    { "n": 39, "passageId": "pC3", "type": "choice", "stem": "39. The word \"provide\" in paragraph 2 is CLOSEST in meaning to ________.", "opts": ["advise", "promise", "offer", "decide"], "answer": "C" },
-    { "n": 40, "passageId": "pC3", "type": "choice", "stem": "40. Which of the following is TRUE according to the passage?", "opts": ["Cell phones only help students entertain themselves.", "Nowadays, students can solve their problems without cell phones.", "Cell phones help students write their assignments at school.", "Students can record the lessons for later review."], "answer": "D" },
-    { "n": 41, "passageId": "pD1", "type": "text", "stem": "41. Original: My sister doesn't have a laptop to study online.<br><i>Start with: </i> <b>My sister wishes she</b>", "answer": "My sister wishes she had a laptop to study online" },
-    { "n": 42, "passageId": "pD1", "type": "text", "stem": "42. Original: \"I am going to travel to Ireland for vacation next month,\" said John.<br><i>Start with: </i> <b>John said</b>", "answer": "John said he was going to travel to Ireland for vacation the following month", "altAnswers": ["John said that he was going to travel to Ireland for vacation the following month"] },
-    { "n": 43, "passageId": "pD1", "type": "text", "stem": "43. Original: If you don't hurry up, you will miss the bus.<br><i>Start with: </i> <b>Unless</b>", "answer": "Unless you hurry up, you will miss the bus" },
-    { "n": 44, "passageId": "pD1", "type": "text", "stem": "44. Original: Eating junk food is not good for teenagers.<br><i>Start with: </i> <b>It is not</b>", "answer": "It is not good for teenagers to eat junk food" },
-    { "n": 45, "passageId": "pD1", "type": "text", "stem": "45. Original: Though my mother was tired, she managed to finish her work.<br><i>Start with: </i> <b>Tired</b>", "answer": "Tired as my mother was, she managed to finish her work", "altAnswers": ["Tired though my mother was, she managed to finish her work"] },
-    { "n": 46, "passageId": "pD2", "type": "text", "stem": "46. Original: My sister often collected dolls when she was young.<br><i>Word to use: </i> <b>USED</b>", "answer": "My sister used to collect dolls when she was young" },
-    { "n": 47, "passageId": "pD2", "type": "text", "stem": "47. Original: I know a Japanese restaurant. The restaurant serves excellent sushi.<br><i>Word to use: </i> <b>WHICH</b>", "answer": "I know a Japanese restaurant which serves excellent sushi" },
-    { "n": 48, "passageId": "pD2", "type": "text", "stem": "48. Original: The worker was so lazy that no manager wanted to hire him.<br><i>Word to use: </i> <b>SUCH</b>", "answer": "He was such a lazy worker that no manager wanted to hire him" },
-    { "n": 49, "passageId": "pD2", "type": "text", "stem": "49. Original: They had no bread left when I came to the local bakery yesterday.<br><i>Word to use: </i> <b>RAN</b>", "answer": "They had run out of bread when I came to the local bakery yesterday", "altAnswers": ["They ran out of bread when I came to the local bakery yesterday"] },
-    { "n": 50, "passageId": "pD2", "type": "text", "stem": "50. Original: The aim of this charity organization is to prioritize the needs of street children.<br><i>Word to use: </i> <b>GIVE</b>", "answer": "The aim of this charity organization is to give priority to the needs of street children" }
+    {
+      "n": 1,
+      "passageId": "p1",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (1).",
+      "opts": ["takes", "take", "taking", "took"],
+      "answer": "A"
+    },
+    {
+      "n": 2,
+      "passageId": "p1",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (2).",
+      "opts": ["knowledge", "awareness", "attention", "focus"],
+      "answer": "B"
+    },
+    {
+      "n": 3,
+      "passageId": "p1",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (3).",
+      "opts": ["place", "placing", "placed", "to place"],
+      "answer": "C"
+    },
+    {
+      "n": 4,
+      "passageId": "p1",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (4).",
+      "opts": ["on", "out", "over", "up"],
+      "answer": "D"
+    },
+    {
+      "n": 5,
+      "passageId": "p1",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (5).",
+      "opts": ["protect", "provide", "produce", "promote"],
+      "answer": "D"
+    },
+    {
+      "n": 6,
+      "passageId": "p1",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (6).",
+      "opts": ["participate", "participant", "participation", "participatory"],
+      "answer": "C"
+    },
+    {
+      "n": 7,
+      "stem": "Mark the letter A, B, C or D to indicate the best arrangement of utterances or sentences to make a cohesive and coherent exchange or text.<br><br><b>Dear Ms Hoang,</b><br><b>a.</b> Please find attached the internship agreement, which should be signed and returned to us by 20 August.<br><b>b.</b> Your outstanding performance throughout the interview process demonstrated strong potential for this role.<br><b>c.</b> The internship includes a monthly stipend of $300 as well as mentorship from senior members of staff.<br><b>d.</b> We are pleased to inform you that you have been offered a three-month summer internship at Vertex Solutions.<br><b>e.</b> If you require any clarification regarding the terms outlined in the agreement, please do not hesitate to contact our HR department.<br><b>Yours sincerely,</b>",
+      "opts": [
+        "d - c - b - a - e",
+        "d - b - c - a - e",
+        "d - a - c - e - b",
+        "d - b - a - e - c"
+      ],
+      "answer": "B"
+    },
+    {
+      "n": 8,
+      "stem": "Mark the letter A, B, C or D to indicate the best arrangement of utterances to make a cohesive and coherent exchange.<br><br><b>a.</b> Customer: Here you are. Thanks for your help.<br><b>b.</b> Customer: I ordered a pizza an hour ago, but it still hasn’t arrived.<br><b>c.</b> Staff: I’m sorry for the inconvenience. Let me check the status of your order right away.",
+      "opts": ["b - c - a", "a - b - c", "c - b - a", "b - a - c"],
+      "answer": "A"
+    },
+    {
+      "n": 9,
+      "stem": "Mark the letter A, B, C or D to indicate the best arrangement of sentences to make a cohesive and coherent text.<br><br><b>a.</b> This flexibility, however, comes at a psychological cost, as the boundary between professional obligations and personal life grows increasingly blurred.<br><b>b.</b> Remote work has rapidly become a defining feature of the modern professional landscape, granting employees greater control over their schedules.<br><b>c.</b> Freed from the daily commute, many workers report having more time for family, exercise and personal projects.<br><b>d.</b> Anyone considering a fully remote position, therefore, ought to weigh the promised freedom against the discipline required to protect their own downtime.<br><b>e.</b> Some employees confess to checking work messages late into the night, unable to switch off even during supposed leisure hours.",
+      "opts": [
+        "c - a - e - d - b",
+        "a - e - d - b - c",
+        "d - b - c - a - e",
+        "b - c - a - e - d"
+      ],
+      "answer": "D"
+    },
+    {
+      "n": 10,
+      "stem": "Mark the letter A, B, C or D to indicate the best arrangement of utterances to make a cohesive and coherent exchange.<br><br><b>a.</b> Mai: What makes you say that?<br><b>b.</b> Mai: I’ve been thinking about studying abroad after graduation. What do you think?<br><b>c.</b> Mai: That’s a fair point. I’ll give it some serious thought.<br><b>d.</b> Linh: Well, the experience of living independently in another country teaches you skills no classroom ever could.<br><b>e.</b> Linh: If I were you, I’d definitely go for it while you’re still young and have few responsibilities.",
+      "opts": [
+        "b - d - a - e - c",
+        "a - d - b - e - c",
+        "b - e - a - d - c",
+        "e - b - a - d - c"
+      ],
+      "answer": "C"
+    },
+    {
+      "n": 11,
+      "stem": "Mark the letter A, B, C or D to indicate the best arrangement of sentences to make a cohesive and coherent text.<br><br><b>a.</b> Within eighteen months, the scheme had reduced average household water consumption by twelve percent and eased pressure on the reservoirs considerably.<br><b>b.</b> Homeowners who installed an approved system received a rebate on their water bill, funded partly through a small levy on new developments.<br><b>c.</b> Years of below-average rainfall combined with rapid population growth had left Millbrook’s reservoirs at dangerously low levels.<br><b>d.</b> The encouraging results led several neighbouring towns to consider adopting similar rebate schemes of their own.<br><b>e.</b> In response, the town council introduced a subsidy scheme encouraging households to install rainwater harvesting systems.",
+      "opts": [
+        "e - c - b - d - a",
+        "c - e - b - a - d",
+        "b - a - d - c - e",
+        "c - b - e - a - d"
+      ],
+      "answer": "B"
+    },
+    {
+      "n": 12,
+      "passageId": "p2",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (12).",
+      "opts": [
+        "that leads people to overestimate how much attention others are paying to them",
+        "leading people how much attention others are overestimating are paying to them",
+        "that people are overestimated by leading how much others pay attention to them",
+        "how much attention people overestimate that others are leading to pay them"
+      ],
+      "answer": "A"
+    },
+    {
+      "n": 13,
+      "passageId": "p2",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (13).",
+      "opts": [
+        "who had been randomly assigned to wear an embarrassing T-shirt into a room of strangers",
+        "who had randomly been assigning an embarrassing T-shirt to wear into a room of strangers",
+        "randomly assigned to whom an embarrassing T-shirt was worn into a room of strangers",
+        "who an embarrassing T-shirt had randomly assigned to wear into a room of strangers"
+      ],
+      "answer": "A"
+    },
+    {
+      "n": 14,
+      "passageId": "p2",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (14).",
+      "opts": [
+        "In reality, the shirt hardly paid anyone any attention at all",
+        "In reality, hardly anyone paid the shirt any attention at all",
+        "Hardly in reality, anyone the shirt paid attention at all",
+        "In reality, anyone hardly paid attention the shirt at all"
+      ],
+      "answer": "B"
+    },
+    {
+      "n": 15,
+      "passageId": "p2",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (15).",
+      "opts": [
+        "leading a minor social slip to replay individuals in their minds",
+        "individuals leading to replay in their minds a minor social slip",
+        "leading individuals to replay a minor social slip in their minds",
+        "to replay leading individuals a minor social slip in their minds"
+      ],
+      "answer": "C"
+    },
+    {
+      "n": 16,
+      "passageId": "p2",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (16).",
+      "opts": [
+        "Yet the truth is that most people’s mistakes are simply too preoccupied to notice themselves with anyone else",
+        "Yet most people, the truth simply is, are too preoccupied to notice themselves with anyone else’s mistakes",
+        "Yet the truth is that most people are simply too preoccupied with anyone else’s mistakes to notice themselves",
+        "Yet the truth is that most people are simply too preoccupied with themselves to notice anyone else’s mistakes"
+      ],
+      "answer": "D"
+    },
+    {
+      "n": 17,
+      "passageId": "p3",
+      "stem": "The word punishing in paragraph 1 is closest in meaning to ______.",
+      "opts": ["gruelling", "profitable", "predictable", "flexible"],
+      "answer": "A"
+    },
+    {
+      "n": 18,
+      "passageId": "p3",
+      "stem": "According to paragraph 1, a low-priced fast-fashion garment ______.",
+      "opts": [
+        "is cheaper only when a buyer purchases several items at once",
+        "rarely reflects the full expense involved in producing it",
+        "is priced according to the wages paid to the garment workers who made it",
+        "costs no more to manufacture than a single cup of coffee"
+      ],
+      "answer": "B"
+    },
+    {
+      "n": 19,
+      "passageId": "p3",
+      "stem": "Which of the following is NOT implied in paragraph 2?",
+      "opts": [
+        "Cotton cultivation for a single garment can consume a substantial volume of water.",
+        "Chemical discharge from dyeing processes can affect community drinking water sources.",
+        "Manufacturers have switched to biodegradable dyes to reduce chemical pollution.",
+        "Recycling systems have been unable to keep pace with the rate of textile disposal."
+      ],
+      "answer": "C"
+    },
+    {
+      "n": 20,
+      "passageId": "p3",
+      "stem": "Where in paragraph 3 does the following sentence best fit?<br><br>Such symptoms often go untreated, since missing a single shift for medical care can cost workers wages they cannot spare.",
+      "opts": ["[II]", "[I]", "[III]", "[IV]"],
+      "answer": "D"
+    },
+    {
+      "n": 21,
+      "passageId": "p3",
+      "stem": "Which of the following best summarises paragraph 3?",
+      "opts": [
+        "Brand transparency laws have recently forced factories to disclose working conditions to the public.",
+        "Respiratory illness is described as the leading cause of death among garment workers worldwide.",
+        "Wages in the garment industry vary considerably depending on a country’s minimum wage laws.",
+        "Garment workers face both inadequate pay and hazardous working conditions that largely go unreported."
+      ],
+      "answer": "D"
+    },
+    {
+      "n": 22,
+      "passageId": "p3",
+      "stem": "The word that in paragraph 4 refers to ______.",
+      "opts": ["a garment", "a party", "an externality", "a landfill"],
+      "answer": "C"
+    },
+    {
+      "n": 23,
+      "passageId": "p3",
+      "stem": "What conclusion can be drawn from paragraph 4?",
+      "opts": [
+        "Fast fashion can only be reformed by banning garments priced under five dollars.",
+        "Reflecting hidden costs in the price of a garment would help ensure that fast fashion is fairly paid for.",
+        "Externalities occur exclusively within the fast fashion industry and nowhere else in the economy.",
+        "Workers and rivers bear equal responsibility for the unpaid costs of clothing production."
+      ],
+      "answer": "B"
+    },
+    {
+      "n": 24,
+      "passageId": "p3",
+      "stem": "Which of the following is true according to the passage?",
+      "opts": [
+        "The environmental and human costs of fast fashion are absorbed by parties other than the buyer.",
+        "The low price of a fast-fashion item generally reflects an efficient production process.",
+        "Consumers are usually well informed about the working conditions inside garment factories.",
+        "Recycling facilities have expanded quickly enough to manage the volume of discarded clothing."
+      ],
+      "answer": "A"
+    },
+    {
+      "n": 25,
+      "passageId": "p3",
+      "stem": "Which of the following can be inferred from the passage?",
+      "opts": [
+        "Fast-fashion brands are the only companies whose products generate hidden externalities.",
+        "Water scarcity is caused exclusively by the production of cotton garments.",
+        "Garment workers would earn fair wages if fewer consumers purchased fast fashion.",
+        "Prices that fail to include externalities may understate the real cost of a product to society."
+      ],
+      "answer": "D"
+    },
+    {
+      "n": 26,
+      "passageId": "p3",
+      "stem": "Which of the following would be the best title for the passage?",
+      "opts": [
+        "A Brief History of the Global Textile Industry",
+        "Water Scarcity: A Growing Global Crisis",
+        "The Unseen Price Tag of Fast Fashion",
+        "Regulating Labour Conditions in Garment Factories"
+      ],
+      "answer": "C"
+    },
+    {
+      "n": 27,
+      "passageId": "p4",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (27).",
+      "opts": ["most", "more", "much", "very"],
+      "answer": "B"
+    },
+    {
+      "n": 28,
+      "passageId": "p4",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (28).",
+      "opts": ["Moreover", "Otherwise", "Nevertheless", "Consequently"],
+      "answer": "A"
+    },
+    {
+      "n": 29,
+      "passageId": "p4",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (29).",
+      "opts": ["no", "none", "any", "some"],
+      "answer": "A"
+    },
+    {
+      "n": 30,
+      "passageId": "p4",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (30).",
+      "opts": ["had", "have", "will have", "having"],
+      "answer": "B"
+    },
+    {
+      "n": 31,
+      "passageId": "p4",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (31).",
+      "opts": ["lively", "active", "golden", "private"],
+      "answer": "C"
+    },
+    {
+      "n": 32,
+      "passageId": "p4",
+      "stem": "Mark the letter A, B, C or D to indicate the option that best fits the blank (32).",
+      "opts": ["Never", "Not", "No", "Don’t"],
+      "answer": "D"
+    },
+    {
+      "n": 33,
+      "passageId": "p5",
+      "stem": "In paragraph 1, the writer is ______.",
+      "opts": [
+        "questioning the effectiveness of a commonly used study method",
+        "recommending highlighting as an effective study aid",
+        "comparing the total study time required by two different methods",
+        "describing the neuroscience behind how memory familiarity forms"
+      ],
+      "answer": "A"
+    },
+    {
+      "n": 34,
+      "passageId": "p5",
+      "stem": "The word its in paragraph 2 refers to ______.",
+      "opts": ["content", "passage", "study", "test"],
+      "answer": "B"
+    },
+    {
+      "n": 35,
+      "passageId": "p5",
+      "stem": "Which of the following best paraphrases the underlined sentence in paragraph 2?",
+      "opts": [
+        "The rereading group’s advantage disappeared within a week of the initial study session.",
+        "Both groups performed similarly right after studying, but the retrieval group pulled further ahead a week later.",
+        "The retrieval-practice group’s edge was evident right after studying and grew even more pronounced a week afterwards.",
+        "The advantage of retrieval practice only became apparent a week after the study session had taken place."
+      ],
+      "answer": "C"
+    },
+    {
+      "n": 36,
+      "passageId": "p5",
+      "stem": "The word durable in paragraph 4 is OPPOSITE in meaning to ______.",
+      "opts": ["long-lasting", "valuable", "gradual", "fleeting"],
+      "answer": "D"
+    },
+    {
+      "n": 37,
+      "passageId": "p5",
+      "stem": "The word rehearsing in paragraph 3 is closest in meaning to ______.",
+      "opts": ["avoiding", "memorising", "inventing", "practising"],
+      "answer": "D"
+    },
+    {
+      "n": 38,
+      "passageId": "p5",
+      "stem": "Which of the following statements would the writer NOT agree with?",
+      "opts": [
+        "Familiarity with a text is not always a reliable indicator of how well it has been learned.",
+        "Struggling to recall information is often a productive part of the learning process.",
+        "Self-testing is beneficial regardless of whether learners receive feedback on their answers.",
+        "Spacing out retrieval attempts tends to produce stronger long-term retention than cramming them together."
+      ],
+      "answer": "C"
+    },
+    {
+      "n": 39,
+      "passageId": "p5",
+      "stem": "In which paragraph does the writer mention a specific psychological concept that explains why retrieval practice works?",
+      "opts": ["Paragraph 1", "Paragraph 3", "Paragraph 2", "Paragraph 4"],
+      "answer": "B"
+    },
+    {
+      "n": 40,
+      "passageId": "p5",
+      "stem": "In which paragraph does the writer warn against last-minute cramming?",
+      "opts": ["Paragraph 4", "Paragraph 2", "Paragraph 3", "Paragraph 1"],
+      "answer": "A"
+    }
   ]
 }
 </script>
@@ -485,8 +777,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0
 /* ==========================================================================
    CẤU HÌNH WEBHOOK GOOGLE SHEETS & PIN TẠI ĐÂY
    ========================================================================== */
-const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycbzdN-FjMwdw6rbIP6a6ux9l7jcvUn1u1Dm5E6AT1mplfujs5gKpy5Ol5_HFOlbH9_zj/exec";
-const SERVER_HO_TRO_MO_RONG = false;
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/AKfycby-JYcrjppR1ywFtGAqkkc1agJRA0CzhJsU5qTB_o6C0niynuUR5we1JN8CEWscIs_T9g/exec"; 
 const ADMIN_SECRET_PIN = "28011981"; 
 
 /* ==========================================================================
@@ -497,8 +788,7 @@ const KEYS = {
   EXAM: STORAGE_PREFIX + 'current_exam',
   STATE: STORAGE_PREFIX + 'active_session',
   RESULTS: STORAGE_PREFIX + 'submissions',
-  SCHEDULE: STORAGE_PREFIX + 'schedule',
-  REVIEW: STORAGE_PREFIX + 'last_review'
+  SCHEDULE: STORAGE_PREFIX + 'schedule'
 };
 
 function getStorage(key, fallback = null) {
@@ -518,19 +808,6 @@ function setStorage(key, val) {
     showToast('Bộ nhớ trình duyệt đầy hoặc bị chặn – kết quả có thể không được lưu!');
     return false;
   }
-}
-
-function maMay() {
-  try {
-    let id = localStorage.getItem(STORAGE_PREFIX + 'ma_may');
-    if (!id) { id = Math.random().toString(36).slice(2, 8); localStorage.setItem(STORAGE_PREFIX + 'ma_may', id); }
-    return id;
-  } catch (e) { return 'khong-ro'; }
-}
-
-function studentKey(name, cls, sbd) {
-  const n = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/\s+/g, ' ').trim();
-  return 'k:' + [n(name), n(cls), n(sbd)].join('|');
 }
 
 function escapeHtml(v) {
@@ -593,49 +870,25 @@ const ExamEngine = {
   timerInterval: null,
   isReviewMode: false,
 
-  async init() {
-    this.bindGlobalKeys();
+  init() {
     try {
+      // ĐỌC DỮ LIỆU ĐỀ THI TRỰC TIẾP TỪ LÕI HTML
       const rawData = document.getElementById('default-exam-data').textContent;
       this.rawExamData = JSON.parse(rawData);
-      this.defaultMeta = JSON.parse(JSON.stringify(this.rawExamData.meta));
+      this.defaultMeta = JSON.parse(JSON.stringify(this.rawExamData.meta || {}));
       this.readScheduleFromUrl();
       this.applySchedule(getStorage(KEYS.SCHEDULE));
-      await this.refreshSchedule();
-      setStorage(KEYS.EXAM, this.rawExamData);
-    } catch (e) {
-      console.error('Lỗi khi tải đề thi:', e);
-      document.getElementById('lobbySchool').textContent = 'LỖI TẢI ĐỀ';
-      document.getElementById('lobbyTitle').textContent = 'KHÔNG TẢI ĐƯỢC ĐỀ THI';
-      document.getElementById('btnStart').disabled = true;
+      setStorage(KEYS.EXAM, this.rawExamData); 
+      console.log("Đã tải đề thi thành công từ mã nguồn.");
+    } catch (error) {
+      console.error("Lỗi khi tải đề thi:", error);
+      const err = document.getElementById('lobbyErr');
+      if(err) err.textContent = 'Lỗi phân tích dữ liệu đề thi. Vui lòng kiểm tra lại đoạn mã JSON.';
     }
+
     this.renderLobbyInfo();
     this.checkResume();
-  },
-
-  async fetchRemoteSchedule() {
-    if (!GOOGLE_SHEETS_URL || !SERVER_HO_TRO_MO_RONG) return undefined;
-    const ctl = new AbortController();
-    const to = setTimeout(() => ctl.abort(), 6000);
-    try {
-      const res = await fetch(GOOGLE_SHEETS_URL + '?action=getConfig&_=' + Date.now(), { cache: 'no-store', signal: ctl.signal });
-      const j = await res.json();
-      if (!j || !j.ok) return undefined;
-      if (j.now) this.clockOffset = j.now - Date.now();
-      return j.schedule || null;
-    } catch (e) {
-      return undefined;
-    } finally {
-      clearTimeout(to);
-    }
-  },
-
-  async refreshSchedule() {
-    const remote = await this.fetchRemoteSchedule();
-    if (remote === undefined) return;
-    if (remote) setStorage(KEYS.SCHEDULE, remote); else localStorage.removeItem(KEYS.SCHEDULE);
-    this.applySchedule(remote);
-    this.renderLobbyInfo();
+    this.bindGlobalKeys();
   },
 
   applySchedule(s) {
@@ -680,12 +933,11 @@ const ExamEngine = {
   },
 
   checkResume() {
-    document.getElementById('btnReviewSaved').style.display = getStorage(KEYS.REVIEW) ? 'block' : 'none';
-    if (!this.rawExamData) return;
     const saved = getStorage(KEYS.STATE);
     const box = document.getElementById('resumeBox');
 
     if (saved && !saved.submitted) {
+      // KIỂM TRA CHÉO: Nếu dữ liệu dang dở là của ĐỀ 1, nhưng hệ thống đang nạp ĐỀ 2 -> TỰ ĐỘNG XÓA
       if (saved.shuffledExam && saved.shuffledExam.meta && saved.shuffledExam.meta.subtitle !== this.rawExamData.meta.subtitle) {
           localStorage.removeItem(KEYS.STATE);
           box.style.display = 'none';
@@ -799,46 +1051,7 @@ const ExamEngine = {
       return shuffledExam;
   },
 
-  canReview() {
-    const m = this.rawExamData && this.rawExamData.meta;
-    if (!m || !m.endTime) return true;
-    return Date.now() + (this.clockOffset || 0) >= new Date(m.endTime).getTime();
-  },
-
-  unlockText() {
-    return new Date(this.rawExamData.meta.endTime).toLocaleString('vi-VN', { hour12: false, dateStyle: 'short', timeStyle: 'short' });
-  },
-
-  async claimAttempt(key, name, cls, sbd) {
-    if (!GOOGLE_SHEETS_URL || !SERVER_HO_TRO_MO_RONG) return undefined;
-    const ctl = new AbortController();
-    const to = setTimeout(() => ctl.abort(), 8000);
-    try {
-      const q = new URLSearchParams({ action: 'start', key, name, cls, sbd, _: Date.now() });
-      const res = await fetch(GOOGLE_SHEETS_URL + '?' + q, { cache: 'no-store', signal: ctl.signal });
-      const j = await res.json();
-      return j && j.ok ? j.allowed : undefined;
-    } catch (e) {
-      return undefined;
-    } finally {
-      clearTimeout(to);
-    }
-  },
-
-  openSavedReview() {
-    const snap = getStorage(KEYS.REVIEW);
-    if (!snap || !this.rawExamData) { showToast('Không có bài đã nộp trên máy này.'); return; }
-    this.session = snap.session;
-    this.examData = snap.exam;
-    this.renderResultScreen(this.session.resultRecord);
-  },
-
-  async startNewSession() {
-    await this.refreshSchedule();
-    await this._startNewSession();
-  },
-
-  async _startNewSession() {
+  startNewSession() {
     const name = document.getElementById('inpName').value.trim();
     const cls = document.getElementById('inpClass').value.trim();
     const sbd = document.getElementById('inpSbd').value.trim();
@@ -854,7 +1067,7 @@ const ExamEngine = {
       return;
     }
 
-    const now = Date.now() + (this.clockOffset || 0);
+    const now = Date.now();
     const meta = this.rawExamData.meta;
     
     if (meta.startTime && meta.endTime) {
@@ -871,17 +1084,6 @@ const ExamEngine = {
       }
     }
     
-    const key = studentKey(name, cls, sbd);
-    const btn = document.getElementById('btnStart');
-    err.textContent = 'Đang kiểm tra thông tin thí sinh...';
-    btn.disabled = true;
-    const allowed = await this.claimAttempt(key, name, cls, sbd);
-    btn.disabled = false;
-    const usedLocal = getStorage(KEYS.RESULTS, []).some(r => r.key === key);
-    if (allowed === false || (allowed === undefined && usedLocal)) {
-      err.textContent = 'Thí sinh này đã tham gia làm bài. Mỗi thí sinh chỉ được thi 1 lần duy nhất; nếu có sự cố, hãy báo giáo viên.';
-      return;
-    }
     err.textContent = '';
 
     this.examData = this.generateShuffledExam();
@@ -973,16 +1175,6 @@ const ExamEngine = {
     this.updatePaletteStatus();
   },
 
-  checkTextAnswer(userAns, q) {
-      let ans = (userAns || '').trim().toLowerCase().replace(/\.$/, '');
-      let ref = q.answer.trim().toLowerCase().replace(/\.$/, '');
-      if (ans === ref) return true;
-      if (q.altAnswers && q.altAnswers.some(a => a.trim().toLowerCase().replace(/\.$/, '') === ans)) {
-          return true;
-      }
-      return false;
-  },
-
   updatePaletteStatus() {
     this.examData.questions.forEach((q, idx) => {
       const btn = document.getElementById(`palBtn_${idx}`);
@@ -991,28 +1183,16 @@ const ExamEngine = {
 
       if (this.isReviewMode) {
         const uAns = this.session.answers[q.n];
-        let isCorrect = false;
-        if (q.type === 'text') {
-            isCorrect = this.checkTextAnswer(uAns, q);
-        } else {
-            isCorrect = (uAns === q.answer);
-        }
-        
-        if (isCorrect) btn.classList.add('correct');
+        if (uAns === q.answer) btn.classList.add('correct');
         else btn.classList.add('wrong');
       } else {
-        const uAns = this.session.answers[q.n];
-        if (uAns && String(uAns).trim().length > 0) btn.classList.add('done');
+        if (this.session.answers[q.n]) btn.classList.add('done');
         if (this.session.flags[q.n]) btn.classList.add('flag');
       }
       if (idx === this.session.curIndex) btn.classList.add('active');
     });
 
-    let doneCount = 0;
-    this.examData.questions.forEach(q => {
-        const val = this.session.answers[q.n];
-        if (val && String(val).trim().length > 0) doneCount++;
-    });
+    const doneCount = Object.keys(this.session.answers).length;
     const total = this.examData.questions.length;
     document.getElementById('progInner').style.width = `${(doneCount / total) * 100}%`;
   },
@@ -1036,7 +1216,9 @@ const ExamEngine = {
         pBox.style.display = 'block';
       }
     } else {
-      pBox.style.display = 'none';
+      document.getElementById('passageBadge').textContent = 'Câu hỏi độc lập';
+      document.getElementById('passageTitle').textContent = '';
+      document.getElementById('passageContent').innerHTML = '<i>(Câu hỏi này không đính kèm đoạn văn bản bổ trợ)</i>';
     }
 
     const fBtn = document.getElementById('btnFlag');
@@ -1053,62 +1235,42 @@ const ExamEngine = {
 
     const optsBox = document.getElementById('optionsContainer');
     optsBox.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+    q.opts.forEach((optText, oIdx) => {
+      const letKey = letters[oIdx];
+      const lbl = document.createElement('label');
+      lbl.className = 'opt-label';
+
+      const isChosen = this.session.answers[q.n] === letKey;
+      if (isChosen) lbl.classList.add('selected');
+
+      if (this.isReviewMode) {
+        if (letKey === q.answer) lbl.classList.add('is-correct');
+        else if (isChosen && letKey !== q.answer) lbl.classList.add('is-wrong');
+      }
+
+      lbl.innerHTML = `
+        <input type="radio" name="opt_choice" value="${letKey}" ${isChosen ? 'checked' : ''} ${this.isReviewMode ? 'disabled' : ''}>
+        <span class="opt-badge">${letKey}</span>
+        <span style="flex:1">${optText}</span>
+      `;
+      if (!this.isReviewMode) {
+        lbl.onclick = () => this.selectOption(q.n, letKey);
+      }
+      optsBox.appendChild(lbl);
+    });
+
     const revBox = document.getElementById('reviewVerdict');
-    revBox.innerHTML = '';
-
-    if (q.type === 'text') {
-        const uAns = escapeHtml(this.session.answers[q.n] || '');
-        optsBox.innerHTML = `<input type="text" class="txt-answer" id="txtAns_${q.n}" placeholder="Nhập câu trả lời..." value="${uAns}" ${this.isReviewMode ? 'disabled' : ''} autocomplete="off">`;
-        
-        if (!this.isReviewMode) {
-            const inp = document.getElementById(`txtAns_${q.n}`);
-            inp.oninput = (e) => {
-                this.session.answers[q.n] = e.target.value;
-                this.saveSession();
-                this.updatePaletteStatus();
-            };
-        } else {
-            const isCorrect = this.checkTextAnswer(this.session.answers[q.n], q);
-            revBox.innerHTML = `
-              <div style="background:#f8fafc;border-left:4px solid ${isCorrect ? 'var(--ok)' : 'var(--bad)'};padding:12px;border-radius:0 8px 8px 0">
-                <div>Đáp án chuẩn: <b style="color:var(--ok)">${escapeHtml(q.answer)}</b></div>
-                <div>Câu trả lời của bạn: <b style="color:${isCorrect ? 'var(--ok)' : 'var(--bad)'}">${uAns || 'Chưa trả lời'}</b></div>
-              </div>
-            `;
-        }
+    if (this.isReviewMode) {
+      const uAns = this.session.answers[q.n];
+      revBox.innerHTML = `
+        <div style="background:#f8fafc;border-left:4px solid var(--brand);padding:12px;border-radius:0 8px 8px 0">
+          <div>Đáp án đúng: <b style="color:var(--ok)">${q.answer}</b> (Lựa chọn của bạn: <b>${uAns || 'Chưa chọn'}</b>)</div>
+          ${q.explain ? `<div style="margin-top:6px;font-size:13.5px;color:var(--mut)"><b>Giải thích:</b> ${q.explain}</div>` : ''}
+        </div>
+      `;
     } else {
-        const letters = ['A', 'B', 'C', 'D'];
-        q.opts.forEach((optText, oIdx) => {
-          const letKey = letters[oIdx];
-          const lbl = document.createElement('label');
-          lbl.className = 'opt-label';
-
-          const isChosen = this.session.answers[q.n] === letKey;
-          if (isChosen) lbl.classList.add('selected');
-
-          if (this.isReviewMode) {
-            if (letKey === q.answer) lbl.classList.add('is-correct');
-            else if (isChosen && letKey !== q.answer) lbl.classList.add('is-wrong');
-          }
-
-          lbl.innerHTML = `
-            <input type="radio" name="opt_choice" value="${letKey}" ${isChosen ? 'checked' : ''} ${this.isReviewMode ? 'disabled' : ''}>
-            <span class="opt-badge">${letKey}</span>
-            <span style="flex:1">${optText}</span>
-          `;
-          if (!this.isReviewMode) {
-            lbl.onclick = () => this.selectOption(q.n, letKey);
-          }
-          optsBox.appendChild(lbl);
-        });
-
-        if (this.isReviewMode) {
-          revBox.innerHTML = `
-            <div style="background:#f8fafc;border-left:4px solid var(--brand);padding:12px;border-radius:0 8px 8px 0">
-              <div>Đáp án chuẩn: <b style="color:var(--ok)">${q.answer}</b></div>
-            </div>
-          `;
-        }
+      revBox.innerHTML = '';
     }
 
     document.getElementById('btnPrev').disabled = (idx === 0);
@@ -1139,11 +1301,7 @@ const ExamEngine = {
   },
 
   openSubmitDialog() {
-    let answered = 0;
-    this.examData.questions.forEach(q => {
-        const val = this.session.answers[q.n];
-        if (val && String(val).trim().length > 0) answered++;
-    });
+    const answered = Object.keys(this.session.answers).length;
     const total = this.examData.questions.length;
     const un = total - answered;
 
@@ -1166,21 +1324,10 @@ const ExamEngine = {
 
     let correctCount = 0;
     this.examData.questions.forEach(q => {
-      const uAns = this.session.answers[q.n];
-      if (q.type === 'text') {
-          if (this.checkTextAnswer(uAns, q)) correctCount++;
-      } else {
-          if (uAns === q.answer) correctCount++;
-      }
+      if (this.session.answers[q.n] === q.answer) correctCount++;
     });
 
     const total = this.examData.questions.length;
-    let answeredCount = 0;
-    this.examData.questions.forEach(q => {
-        const val = this.session.answers[q.n];
-        if (val && String(val).trim().length > 0) answeredCount++;
-    });
-
     const ppq = this.examData.meta.pointsPerQuestion || (10 / total);
     const finalScore = +(correctCount * ppq).toFixed(2);
     const usedTime = Math.min(this.session.durationSec, Math.floor((Date.now() - this.session.startTime) / 1000));
@@ -1192,12 +1339,11 @@ const ExamEngine = {
       sbd: this.session.user.sbd,
       score: finalScore,
       correct: correctCount,
-      wrong: answeredCount - correctCount,
-      blank: total - answeredCount,
+      wrong: total - correctCount - (total - Object.keys(this.session.answers).length),
+      blank: total - Object.keys(this.session.answers).length,
       usedTime,
       tabSwitches: this.session.tabSwitches,
-      submittedAt: new Date().toLocaleString('vi-VN'),
-      key: studentKey(this.session.user.name, this.session.user.cls, this.session.user.sbd)
+      submittedAt: new Date().toLocaleString('vi-VN')
     };
 
     const allSubs = getStorage(KEYS.RESULTS, []);
@@ -1208,23 +1354,24 @@ const ExamEngine = {
       fetch(GOOGLE_SHEETS_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          hoTen: resultRecord.name,
-          lop: resultRecord.cls,
-          bai: this.rawExamData.meta.title || 'Bài thi',
-          diem: resultRecord.score,
-          tongDiem: 10,
-          thoiGianLam: resultRecord.usedTime,
-          maMay: maMay()
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          "name": resultRecord.name,
+          "cls": resultRecord.cls,
+          "sbd": resultRecord.sbd,
+          "score": resultRecord.score,
+          "correct": resultRecord.correct,
+          "time": resultRecord.usedTime,
+          "tabSwitches": resultRecord.tabSwitches,
+          "submittedAt": resultRecord.submittedAt
         })
       }).catch(err => console.log("Không thể gửi dữ liệu lên server:", err));
     }
 
-    this.session.resultRecord = resultRecord;
+    this.session.resultRecord = resultRecord; 
     localStorage.removeItem(KEYS.STATE);
-    const { shuffledExam: _drop, ...sess } = this.session;
-    setStorage(KEYS.REVIEW, { session: sess, exam: this.examData });
 
     if (silent) {
       showToast(`Bài làm dang dở của ${resultRecord.name} đã hết giờ và được tự động nộp.`);
@@ -1238,32 +1385,45 @@ const ExamEngine = {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('scrResult').classList.add('active');
 
-    // LUÔN LUÔN HIỂN THỊ ĐIỂM SỐ
+    // Luôn hiển thị điểm số
     document.getElementById('resFinalScore').textContent = r.score.toFixed(2);
     document.getElementById('scoreRing').style.setProperty('--p', (r.score / 10) * 100);
     document.getElementById('resStudentInfo').textContent = `${r.name} — Lớp ${r.cls} ${r.sbd ? '— SBD: ' + r.sbd : ''} (Nộp: ${r.submittedAt})`;
 
-    document.getElementById('kpiTime').textContent = formatTime(r.usedTime);
-    document.getElementById('kpiTabSwitches').textContent = `${r.tabSwitches} lần`;
+    // KIỂM TRA THỜI GIAN KẾT THÚC THI
+    const m = this.examData.meta;
+    let isTimeEnded = true; 
+    if (m.endTime) {
+      const endMs = new Date(m.endTime).getTime();
+      if (Date.now() < endMs) {
+        isTimeEnded = false; // Vẫn chưa qua thời điểm endTime
+      }
+    }
 
     const btnReview = document.getElementById('btnReview');
-    const open = this.canReview();
 
-    if (open) {
-        document.getElementById('kpiCorrect').textContent = `${r.correct}/${this.examData.questions.length}`;
-        document.getElementById('kpiWrong').textContent = r.wrong;
-        document.getElementById('kpiBlank').textContent = r.blank;
-        
+    if (isTimeEnded) {
+      // Đã hết giờ: Hiển thị chi tiết và mở khóa nút
+      document.getElementById('kpiCorrect').textContent = `${r.correct}/${this.examData.questions.length}`;
+      document.getElementById('kpiWrong').textContent = r.wrong;
+      if (btnReview) {
         btnReview.disabled = false;
         btnReview.textContent = 'Xem lại bài & đáp án';
+      }
     } else {
-        document.getElementById('kpiCorrect').textContent = `? / ${this.examData.questions.length}`;
-        document.getElementById('kpiWrong').textContent = '?';
-        document.getElementById('kpiBlank').textContent = '?';
-        
+      // Chưa hết giờ: Ẩn số câu đúng/sai, khóa nút xem lại
+      document.getElementById('kpiCorrect').textContent = '?';
+      document.getElementById('kpiWrong').textContent = '?';
+      if (btnReview) {
         btnReview.disabled = true;
-        btnReview.textContent = 'Đáp án sẽ mở lúc ' + this.unlockText();
+        btnReview.textContent = 'Xem lại bài (Đang khóa chờ hết giờ thi)';
+      }
     }
+
+    // Các thông số phụ khác vẫn hiển thị bình thường
+    document.getElementById('kpiBlank').textContent = r.blank;
+    document.getElementById('kpiTime').textContent = formatTime(r.usedTime);
+    document.getElementById('kpiTabSwitches').textContent = `${r.tabSwitches} lần`;
   },
 
   onHeaderAction() {
@@ -1277,10 +1437,13 @@ const ExamEngine = {
   },
 
   enterReviewMode() {
-    if (!this.canReview()) {
-      showToast('Đáp án chỉ được mở sau khi hết khung giờ thi (' + this.unlockText() + ').');
+    const m = this.examData.meta;
+    // Chặn ở cấp độ hàm nếu chưa hết giờ
+    if (m.endTime && Date.now() < new Date(m.endTime).getTime()) {
+      showToast('Chưa hết thời gian thi. Bạn chưa thể xem lại bài lúc này!');
       return;
     }
+
     this.isReviewMode = true;
     const tm = document.getElementById('examTimer');
     tm.textContent = 'Xem lại';
@@ -1303,12 +1466,12 @@ const ExamEngine = {
       if (!document.getElementById('scrExam').classList.contains('active')) return;
       if (document.getElementById('dialogModal').open || e.ctrlKey || e.metaKey || e.altKey) return;
       const key = e.key.toUpperCase();
-      const q = this.examData.questions[this.session.curIndex];
-      if (q.type !== 'text' && ['A', 'B', 'C', 'D'].includes(key) && !this.isReviewMode && document.activeElement.tagName !== 'INPUT') {
+      if (['A', 'B', 'C', 'D'].includes(key) && !this.isReviewMode) {
+        const q = this.examData.questions[this.session.curIndex];
         this.selectOption(q.n, key);
-      } else if (e.key === 'ArrowRight' && document.activeElement.tagName !== 'INPUT') {
+      } else if (e.key === 'ArrowRight') {
         this.navigate(1);
-      } else if (e.key === 'ArrowLeft' && document.activeElement.tagName !== 'INPUT') {
+      } else if (e.key === 'ArrowLeft') {
         this.navigate(-1);
       }
     });
@@ -1338,7 +1501,7 @@ const AdminEngine = {
           cls: 'primary',
           fn: () => {
             const val = document.getElementById('adminPinInput').value;
-            if (val === ADMIN_SECRET_PIN) { this.pin = val; this.openDashboard(); }
+            if (val === ADMIN_SECRET_PIN) this.openDashboard();
             else showToast('Mã PIN không chính xác!');
           }
         }
@@ -1354,7 +1517,6 @@ const AdminEngine = {
   },
 
   loadScheduleForm() {
-    if (!ExamEngine.rawExamData) return;
     const m = ExamEngine.rawExamData.meta;
     document.getElementById('schMode').value = (m.startTime && m.endTime) ? 'window' : 'free';
     document.getElementById('schStart').value = this.toInput(m.startTime);
@@ -1388,63 +1550,26 @@ const AdminEngine = {
     return s;
   },
 
-  async allowRetake() {
-    if (!SERVER_HO_TRO_MO_RONG) { showToast('Chức năng này cần máy chủ hỗ trợ – Code.gs hiện chưa có.'); return; }
-    const v = prompt('Nhập thí sinh cần cho thi lại theo dạng:  Họ tên | Lớp | SBD  (bỏ trống SBD nếu không có)');
-    if (!v) return;
-    const [name, cls, sbd] = v.split('|').map(s => s.trim());
-    if (!name || !cls) { showToast('Cần nhập ít nhất Họ tên và Lớp.'); return; }
-    const key = studentKey(name, cls, sbd || '');
-    const base = GOOGLE_SHEETS_URL;
-    let ok = false;
-    try {
-      await fetch(base, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ action: 'reset', pin: this.pin || '', key }) });
-      const res = await fetch(base + '?action=check&key=' + encodeURIComponent(key) + '&_=' + Date.now(), { cache: 'no-store' });
-      ok = (await res.json()).used === false;
-    } catch (e) {}
-    showToast(ok ? 'Đã cho phép ' + name + ' thi lại.' : 'Chưa xác nhận được – kiểm tra Apps Script, mã PIN hoặc thông tin thí sinh.');
-  },
-
-  async pushSchedule(s) {
-    if (!GOOGLE_SHEETS_URL || !SERVER_HO_TRO_MO_RONG) return false;
-    try {
-      await fetch(GOOGLE_SHEETS_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ action: 'setConfig', pin: this.pin || '', schedule: s ? JSON.stringify(s) : '' })
-      });
-      const back = await ExamEngine.fetchRemoteSchedule();
-      return back !== undefined && JSON.stringify(back || null) === JSON.stringify(s || null);
-    } catch (e) {
-      return false;
-    }
-  },
-
-  async saveSchedule() {
+  saveSchedule() {
     const s = this.readSchedule();
     if (!s) return null;
     setStorage(KEYS.SCHEDULE, s);
     ExamEngine.applySchedule(s);
     ExamEngine.renderLobbyInfo();
-    showToast('Đang đồng bộ lịch thi lên máy chủ...');
-    const ok = await this.pushSchedule(s);
-    showToast(ok ? 'Đã lưu và đồng bộ lịch thi cho mọi học sinh.' : 'Đã lưu trên máy này. Lịch thi chưa được đồng bộ lên máy chủ (Code.gs chưa hỗ trợ).');
+    showToast('Đã lưu lịch thi.');
     return s;
   },
 
-  async resetSchedule() {
+  resetSchedule() {
     localStorage.removeItem(KEYS.SCHEDULE);
     ExamEngine.applySchedule(null);
     ExamEngine.renderLobbyInfo();
     this.loadScheduleForm();
-    const ok = await this.pushSchedule(null);
-    showToast(ok ? 'Đã khôi phục lịch mặc định cho mọi học sinh.' : 'Đã khôi phục trên máy này. Máy chủ chưa hỗ trợ đồng bộ lịch thi.');
+    showToast('Đã khôi phục lịch thi mặc định.');
   },
 
-  async copyLink() {
-    const s = await this.saveSchedule();
+  copyLink() {
+    const s = this.saveSchedule();
     if (!s) return;
     const link = location.href.split('#')[0] + '#lich=' + encodeURIComponent(btoa(JSON.stringify(s)));
     const fallback = () => prompt('Sao chép liên kết này:', link);
